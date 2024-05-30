@@ -51,7 +51,7 @@ deploy_service() {
 }
 
 zero_downtime_deploy() {
-  deploy_service "web" "8000"
+  deploy_service "web" "8000" false
 
   # stop routing requests to the old container
   reload_nginx
