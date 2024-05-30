@@ -21,6 +21,7 @@ wait_for_container() {
 deploy_service() {
   local service_name=$1
   local service_port=$2
+  local check_health=${3:-true}
 
   echo "Deploying $service_name..."
 
@@ -28,11 +29,14 @@ deploy_service() {
   echo "Scale $service_name..."
   docker-compose up -d --no-deps --scale $service_name=2 --no-recreate --build $service_name
 
-  # wait for new container to be available
-  echo "Check new container..."
-  local new_container_id=$(docker ps -f name=$service_name -q | head -n1)
-  wait_for_container $new_container_id $service_port
-
+  # Wait for new container to be available if check_health is true
+  if [ "$check_health" = true ]; then
+    echo "Checking new container..."
+    local new_container_id=$(docker ps -f name=$service_name -q | head -n1)
+    wait_for_container $new_container_id $service_port
+  else
+    echo "Skipping health check for $service_name..."
+  fi
   # start routing requests to the new container (as well as the old)
   echo "Reload Nginx..."
   reload_nginx
