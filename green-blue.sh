@@ -1,5 +1,7 @@
 reload_nginx() {
-  docker exec nginx /usr/sbin/nginx -s reload
+  nginx_container_id=$(docker ps -f name=nginx -q | head -n1)
+  echo "Reloading Nginx (container ID: $nginx_container_id)... "
+  docker exec $nginx_container_id nginx -s reload
 }
 
 wait_for_container() {
@@ -13,7 +15,7 @@ wait_for_container() {
     echo "New container failed health check at $container_ip:$service_port, exiting..."
     exit 1
   }
-  echo "New container at $container_ip:service_port working"
+  echo "New container at $container_ip:$service_port working"
 }
 
 deploy_service() {
