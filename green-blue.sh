@@ -26,7 +26,7 @@ deploy_service() {
 
   # bring a new container online, running new code
   echo "Scale $service_name..."
-  docker-compose up -d --no-deps --scale $service_name=2 --no-recreate $service_name
+  docker-compose up -d --no-deps --scale $service_name=2 --no-recreate --build $service_name
 
   # wait for new container to be available
   echo "Check new container..."
