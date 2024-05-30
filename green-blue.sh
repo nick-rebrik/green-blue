@@ -44,13 +44,13 @@ deploy_service() {
 
   # finalize scaling
   docker-compose up -d --no-deps --scale $service_name=1 --no-recreate $service_name
-
-  # stop routing requests to the old container
-  reload_nginx
 }
 
 zero_downtime_deploy() {
   deploy_service "web" "8000"
+
+  # stop routing requests to the old container
+  reload_nginx
 }
 
 zero_downtime_deploy
